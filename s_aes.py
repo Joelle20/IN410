@@ -1,3 +1,5 @@
+from helper_fc import gf_mult, binary_to_text, text_to_binary
+
 #Initialize constants
 
 SBOX = [
@@ -41,28 +43,6 @@ def createState(text):
         [n0, n2],
         [n1, n3]
     ]
-
-#Helper function
-def binary_to_text(bin_str):
-    first_byte = bin_str[:8]
-    second_byte = bin_str[8:]
-    
-    char1 = chr(int(first_byte, 2))
-    char2 = chr(int(second_byte, 2))
-    
-    return char1 + char2
-
-#GF mult
-def gf_mult(a, b):
-    p = 0
-    for _ in range(4):
-        if b & 1:
-            p ^= a
-        a <<= 1
-        if a & 0x10:
-            a ^= 0b10011
-        b >>= 1
-    return p & 0xF
 
 #AddRoundKey
 def addRoundKey(state, key):
@@ -193,18 +173,3 @@ def decrypt(ciphertext, key):
     plaintext = (state[0][0] << 12) | (state[1][0] << 8) | (state[0][1] << 4)  | (state[1][1])
 
     return f"{plaintext:016b}"
-
-#test
-plaintext = "ok"
-bin_plaintext = "".join(format(ord(c), '08b') for c in plaintext)
-print(f"Plain Text: {bin_plaintext} \n")
-key0 = 0b1010011100111011
-key = keyExpansion(key0)
-for i, k in enumerate(key):
-    print(f"Key{i}: {k}")
-cipher = encrypt(plaintext, key)
-print(f"\nCipher Text: {cipher}")
-ciphertext = binary_to_text(cipher)
-plain = decrypt(ciphertext, key)
-print(f"Recovered Plain Text: {plain}")
-
