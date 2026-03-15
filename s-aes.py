@@ -42,6 +42,16 @@ def createState(text):
         [n1, n3]
     ]
 
+#Helper function
+def binary_to_text(bin_str):
+    first_byte = bin_str[:8]
+    second_byte = bin_str[8:]
+    
+    char1 = chr(int(first_byte, 2))
+    char2 = chr(int(second_byte, 2))
+    
+    return char1 + char2
+
 #GF mult
 def gf_mult(a, b):
     p = 0
@@ -75,6 +85,19 @@ def subNibbles(state):
         for j in range(2):
             new_state[i][j] = subNib(state[i][j])
     return new_state
+
+#InvSubNibbles
+def invSubNib(b):
+    row = (b & 0xC) >> 2
+    col = b & 0x3
+    return INV_SBOX[row][col]
+
+def invSubNibbles(state):
+    new_state = [[0, 0], [0, 0]]
+    for i in range(2):
+        for j in range(2):
+            new_state[i][j] = invSubNib(state[i][j])
+    return new_state
     
 
 #ShiftRows
@@ -93,6 +116,18 @@ def mixColumns(state):
     m1 = n1 ^ gf_mult(4, n0)
     m2 = n2 ^ gf_mult(4, n3)
     m3 = n3 ^ gf_mult(4, n2)
+
+    return [[m0, m2], [m1, m3]]
+
+#InvMixColumns
+def invMixColumns(state):
+    n0, n2 = state[0]
+    n1, n3 = state[1]
+
+    m0 = gf_mult(9, n0) ^ gf_mult(2, n1)
+    m1 = gf_mult(2, n0) ^ gf_mult(9, n1)
+    m2 = gf_mult(9, n2) ^ gf_mult(2, n3)
+    m3 = gf_mult(2, n2) ^ gf_mult(9, n3)
 
     return [[m0, m2], [m1, m3]]
 
@@ -129,25 +164,47 @@ def keyExpansion(key):
 
 #Encryption
 def encrypt(plaintext, key):
-    k0, k1, k2 = keyExpansion(key)
     state = createState(plaintext)
 
-    state = addRoundKey(state, k0)
+    state = addRoundKey(state, key[0])
 
     state = mixColumns(shiftRows(subNibbles(state)))
-    state = addRoundKey(state, k1)
+    state = addRoundKey(state, key[1])
 
     state = shiftRows(subNibbles(state))
-    state = addRoundKey(state, k2)
+    state = addRoundKey(state, key[2])
 
     cipher = (state[0][0] << 12) | (state[1][0] << 8) | (state[0][1] << 4)  | (state[1][1])
 
     return f"{cipher:016b}"
 
+#Decryption
+def decrypt(ciphertext, key):
+    state = createState(ciphertext)
+
+    state = addRoundKey(state, key[2])
+
+    state = addRoundKey(invSubNibbles(shiftRows(state)), key[1])
+    state = invMixColumns(state)
+
+    state = invSubNibbles(shiftRows(state))
+    state = addRoundKey(state, key[0])
+
+    plaintext = (state[0][0] << 12) | (state[1][0] << 8) | (state[0][1] << 4)  | (state[1][1])
+
+    return f"{plaintext:016b}"
 
 #test
 plaintext = "ok"
-key = 0b1010011100111011
+bin_plaintext = "".join(format(ord(c), '08b') for c in plaintext)
+print(f"Plain Text: {bin_plaintext} \n")
+key0 = 0b1010011100111011
+key = keyExpansion(key0)
+for i, k in enumerate(key):
+    print(f"Key{i}: {k}")
 cipher = encrypt(plaintext, key)
-print(cipher)
+print(f"\nCipher Text: {cipher}")
+ciphertext = binary_to_text(cipher)
+plain = decrypt(ciphertext, key)
+print(f"Recovered Plain Text: {plain}")
 
