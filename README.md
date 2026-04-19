@@ -139,24 +139,6 @@ With `key1` and `T0` known, iterate all possible alpha values (2¹⁶) and check
 python attack.py
 ```
 
-Expected output:
-```
-CHOSEN PLAINTEXT ATTACK
-==========================
-[1] Building table for E(0, key)...
-[2] Querying xex_encrypt...
-[3] Finding (key1, T0) candidates...
-        Candidates found: ~41000
-[4] Filtering candidates...
-        Remaining candidates: ~2
-[5] Searching for alpha...
-
-[SUCCESS]
-key1  = 0xA73B
-T0    = 0xXXXX (= encrypt(tweak, key2))
-alpha = 0x0002
-```
-
 ---
 ## Dependencies
 
