@@ -18,6 +18,9 @@ def tweak_to_text(tweak):
     
     return first_char + second_char
 
+def to_int16(c1, c2):
+    return (ord(c1) << 8) | ord(c2)
+
 #GF mult
 def gf_mult(a, b):
     p = 0

@@ -1,4 +1,4 @@
-from xex_mode import xex_encrypt, compute_T0
+from xex_mode import xex_encrypt_file, compute_T0
 from helper_fc import binary_to_text, load_keys
 
 
@@ -13,6 +13,7 @@ def encrypt_file(input_file, output_file):
         content += pad
 
     T0 = compute_T0(key2, tweak)
+    print(f"T0: {T0:04x}")
 
     encrypted_blocks = []
     j = 0
@@ -20,7 +21,7 @@ def encrypt_file(input_file, output_file):
     for i in range(0, len(content), 2):
         block = content[i:i+2]
 
-        cipher_bits = xex_encrypt(block, key1, T0, alpha, j)
+        cipher_bits = xex_encrypt_file(block, key1, T0, alpha, j)
         encrypted_blocks.append(binary_to_text(cipher_bits))
         j += 1
 
