@@ -25,7 +25,7 @@ def attack(xex_encrypt, pair_j1, pair_j2):
         table_zero[result] = key
 
     #2-Query xex_encrypt
-    print("[2] Querying xex_encrypt...")
+    print("[2] Querying oracle...") #oracle is a black box function 
 
     xex_encrypt_data = {}   #save x → ciphertext
 
