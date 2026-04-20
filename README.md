@@ -142,5 +142,5 @@ python attack.py
 ---
 ## Dependencies
 
-- Python 3.x (no third-party packages required)
+- Python 3.x
 - All modules are pure Python using only the standard library
