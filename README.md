@@ -13,7 +13,8 @@ A Python implementation of **XTS-AES** (XEX-based Tweaked CodeBook mode with cip
 ├── encrypt.py      # Encrypts file Text.txt → Cipher.txt
 ├── decrypt.py      # Decrypts file Cipher.txt → Recovered.txt
 ├── attack.py       # Chosen Plaintext Attack to recover key1, T0, and alpha
-└── keys.json       # Key configuration file
+├── keys.json       # Key configuration file
+└── app.py          # GUI
 ```
 
 ---
@@ -140,7 +141,26 @@ python attack.py
 ```
 
 ---
-## Dependencies
 
+## Gradio UI
+
+A simple graphical interface is provided using Gradio to interact with the encryption system without using the terminal.
+
+It allows you to:
+- Upload a file
+- Preview input and output
+- Encrypt or decrypt files
+- Download results
+
+### Run the UI
+
+```bash
+pip install gradio
+python app.py
+```
+
+## Dependencies
+---
 - Python 3.x
+- Gradio for UI 
 - All modules are pure Python using only the standard library
